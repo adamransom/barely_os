@@ -1,14 +1,14 @@
 # Barely OS
 
-The goal of this project is to eventually write an extremely simple kernel for the Raspberry Pi 3, to learn more about bare-metal programming and how operating systems work in general.
+The goal of this project is to eventually write an extremely simple kernel for the Raspberry Pi 3, in order to learn more about bare-metal programming and how operating systems work in general.
 
-At first, this will mostly be experiments with bare-metal programming in assembly, then transitioning into Rust and finally starting to work towards building a kernal.
+At first, this will mostly be experiments with bare-metal programming in assembly, then transitioning into Rust and finally starting to work towards building a kernel.
 
 I hope to record at least some of this journey on my blog over at [adamransom.github.io](https://adamransom.github.io), though I can't vouch that'll be updated all that frequently.
 
 ## Setup
 
-In order to run these examples, you will most notably need a Raspberry Pi 3 Model B. Whilst a lot of the same code can be used on Raspberry Pi 2, there are some big differences early on (for example when trying to turn on the ACT LED).
+In order to run these examples, you will most notably need a Raspberry Pi 3 Model B. Whilst a lot of the same code can be used on a Raspberry Pi 2, there are some big differences early on (for example when trying to turn on the ACT LED).
 
 Secondly you will need the [arm-none-eabi](https://launchpad.net/gcc-arm-embedded/+download) toolchain to assemble, link and generate a binary image to put on your SD card.
 
@@ -24,6 +24,6 @@ make
 
 Then you will need to copy the generated `kernel.img` to your SD card, along with the [Raspberry Pi boot files](https://github.com/raspberrypi/firmware/tree/master/boot) (`bootloader.bin` and `start.elf`), put the card carefully in your Pi and you are good to go!
 
-## What it does
+## What does it do?
 
 Well, right now the small assembly file simply turns on the activity LED on the Raspberry Pi 3. Hopefully a lot more interesting things will happen soon!
