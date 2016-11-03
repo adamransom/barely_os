@@ -18,11 +18,12 @@
 
 _start:
   mov sp, #0x8000 @; Set up the stack pointer
-  b main
+  b main @; Run main, which never returns
 
 .section .text
 main:
-  b SetActLEDState
+  mov r0, #0 @; Set the first argument (the state) to 1
+  b SetActLEDState @; Call the SetActLEDState function
 
   wait1$:
     b wait1$ @; Give the CPU something to do ad infinitum
