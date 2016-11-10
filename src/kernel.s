@@ -22,8 +22,8 @@ _start:
 
 .section .text
 main:
-  mov r0, #0 @; Set the first argument (the state) to 1
-  b SetActLEDState @; Call the SetActLEDState function
+  mov r0, #1
+  bl SetActLEDState @; Call the SetActLEDState function
 
-  wait1$:
-    b wait1$ @; Give the CPU something to do ad infinitum
+hang:
+  b hang

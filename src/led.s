@@ -6,8 +6,6 @@
 @; with the GPIO expander, we need to use the GPU's mailbox interface (in
 @; particular, we need to send a message to the property tag channel).
 @;
-@; Mailbox base address: 0x3f00b880
-@; Mailbox 1 write address: [0x3f00b880, #0x20]
 @; Property tag channel: 8
 @; Property tag ID: 0x00038041 (SET_GPIO_STATE)
 @; Property tag message: 130 1 (ACT_LED pin number followed by state)
@@ -29,7 +27,7 @@ PropertyInfo:
   .int 0 @; End tag
 PropertyInfoEnd:
 
-@; Function to control the state of the ACT LED
+@; Sets the state of the ACT LED
 @;
 @; state: 1 = on, 0 = off
 @;
@@ -38,20 +36,22 @@ PropertyInfoEnd:
 .global SetActLEDState
 SetActLEDState:
   push {lr} @; Save the point the function should return to
-  mailbox .req r1 @; Alias mailbox to r1
-  ldr r1, =0x3f00b880 @; Load the mailbox's base address into r1
+  state .req r2
+  mov state, r0 @; Move the state into temporary register
+  message .req r0
+  ldr message, =PropertyInfo @; Load r0 with address of our message buffer
+  mov r3, #0
+  str r3, [message, #0x4] @; Reset request code
+  str r3, [message, #0x10] @; Reset request/response size
+  mov r3, #130
+  str r3, [message, #0x14] @; Reset pin number
+  str state, [message, #0x18] @; Put the requested state in the tag value buffer
+  mov r1, #8 @; Set the channel for the following function call
+  .unreq message
+  .unreq state
+  bl MailboxWrite @; Write the message to the mailbox
 
-  wait1$:
-    status .req r2 @; Alias status to r2
-    ldr status, [mailbox, #0x18] @; Load the Mailbox 0 status address
-    tst status, #0x80000000 @; Check the status against the FULL bit
-    .unreq status @; Unset the alias
-    bne wait1$ @; Keep checking the mailbox until it isn't full
+  mov r0, #8
+  bl MailboxRead @; Read from the response from the mailbox
 
-  message .req r2 @; Alias message to r2
-  ldr message, =PropertyInfo @; Load r2 with address of our message buffer
-  str r0, [message, #0x18] @; Put the requested state in the tag value buffer
-  add message, #8 @; Put the channel in the last 4 bits
-  str message, [mailbox, #0x20] @; Put the message in the mailbox
-  .unreq message @; Unset the alias
-  pop {pc} @; Pop the saved LR (return address) into the program counter
+  pop {pc} @; Pop the saved LR (return address) into the program counter to return
