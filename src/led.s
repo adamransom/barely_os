@@ -55,3 +55,21 @@ SetActLEDState:
   bl MailboxRead @; Read from the response from the mailbox
 
   pop {pc} @; Pop the saved LR (return address) into the program counter to return
+
+@; Turn the ACT LED on
+@; Rust Signature: fn LED_ON()
+.global LED_ON
+LED_ON:
+  push {lr}
+  mov r0, #1
+  bl SetActLEDState
+  pop {pc}
+
+@; Turn the ACT LED off
+@; Rust Signature: fn LED_OFF()
+.global LED_OFF
+LED_OFF:
+  push {lr}
+  mov r0, #0
+  bl SetActLEDState
+  pop {pc}

@@ -22,8 +22,14 @@ _start:
 
 .section .text
 main:
-  mov r0, #1
-  bl SetActLEDState @; Call the SetActLEDState function
+  ldr r0, =1000000 @; 1 second
+  bl Wait @; Wait a bit
 
-hang:
-  b hang
+  bl LED_ON
+
+  ldr r0, =1000000 @; 1 second
+  bl Wait @; Wait a bit
+
+  bl LED_OFF
+
+  b main
