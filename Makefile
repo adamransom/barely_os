@@ -1,8 +1,17 @@
 # The ARM toolchain prefix
 ARMGNU = arm-none-eabi
 
+# The target architecture
+ARCH = armv8-a
+
+# The target CPU
+CPU = cortex-a53
+
+# The output folder
+OUTPUT = target/$(CPU)/release/
+
 # Directory to put the intermediate build files
-BUILD = build/
+BUILD = $(OUTPUT)build/
 
 # Directory where the source files are
 SOURCE = src/
@@ -11,10 +20,10 @@ SOURCE = src/
 TARGET_NAME = kernel
 
 # Name of the file to output
-TARGET = kernel.img
+TARGET = $(OUTPUT)kernel.img
 
 # Name of the listing file to output
-LIST = kernel.list
+LIST = $(OUTPUT)kernel.list
 
 # Name of the linker script to use
 LINK_SCRIPT = kernel.ld
@@ -29,23 +38,25 @@ $(TARGET): $(BUILD)kernel.elf
 	$(ARMGNU)-objcopy $(BUILD)kernel.elf -O binary $(TARGET) 
 
 # Rule to make the ELF file
-$(BUILD)kernel.elf: $(OBJECTS) $(LINK_SCRIPT)
-	$(ARMGNU)-ld $(OBJECTS) -o $(BUILD)kernel.elf -T $(LINK_SCRIPT)
+$(BUILD)kernel.elf: $(OBJECTS) $(LINK_SCRIPT) xargo
+	$(ARMGNU)-ld $(OBJECTS) $(OUTPUT)libbarelyos.a -o $(BUILD)kernel.elf -T $(LINK_SCRIPT)
 
 # Rule to make the object files
 $(BUILD)%.o: $(SOURCE)%.s $(BUILD)
-	$(ARMGNU)-as $< -o $@
+	$(ARMGNU)-as $< -mcpu=$(CPU) -march=$(ARCH) -o $@
 
 # Rule to make the listing file.
 $(LIST): $(BUILD)kernel.elf
 	$(ARMGNU)-objdump -D $(BUILD)kernel.elf > $(LIST)
 
+# Compile the Rust code with Xargo
+xargo:
+	xargo build --release --target=$(CPU)
+
 # Create the build directory
 $(BUILD):
-	mkdir $@
+	mkdir -p $@
 
 # Clean all the intermediate and output files
 clean:
-	rm -rf build/
-	rm -f $(LIST)
-	rm -f $(TARGET)
+	xargo clean

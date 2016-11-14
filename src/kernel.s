@@ -18,6 +18,8 @@
 
 _start:
   mov sp, #0x8000 @; Set up the stack pointer
+  .extern kernel_main @; Declare an external symbol
+  blx kernel_main @; Call the 'kernel_main' function defined in Rust
   b main @; Run main, which never returns
 
 .section .text
