@@ -16,11 +16,8 @@ BUILD = $(OUTPUT)build/
 # Directory where the source files are
 SOURCE = src/
 
-# Name of the target
-TARGET_NAME = kernel
-
 # Name of the file to output
-TARGET = $(OUTPUT)kernel.img
+KERNEL = $(OUTPUT)kernel.img
 
 # Name of the listing file to output
 LIST = $(OUTPUT)kernel.list
@@ -31,11 +28,11 @@ LINK_SCRIPT = kernel.ld
 OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s))
 
 # Rule to build everything (creates the target image and listing)
-all: $(TARGET) $(LIST)
+all: $(KERNEL) $(LIST)
 
 # Rule to create the image file
-$(TARGET): $(BUILD)kernel.elf
-	$(ARMGNU)-objcopy $(BUILD)kernel.elf -O binary $(TARGET) 
+$(KERNEL): $(BUILD)kernel.elf
+	$(ARMGNU)-objcopy $(BUILD)kernel.elf -O binary $(KERNEL)
 
 # Rule to make the ELF file
 $(BUILD)kernel.elf: $(OBJECTS) $(LINK_SCRIPT) xargo
