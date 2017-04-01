@@ -1,3 +1,4 @@
+ENTRY(_start)
 /*
  * Very simple linker script, combing the text and data sections
  * and putting them starting at address 0x800.

@@ -1,20 +1,23 @@
 # The ARM toolchain prefix
 ARMGNU = arm-none-eabi
 
-# The target architecture
-ARCH = armv8-a
+# The name of the target board
+BOARD = bcm2837
+
+# The full target architecure
+MARCH = armv8-a
 
 # The target CPU
 CPU = cortex-a53
 
 # The output folder
-OUTPUT = target/$(CPU)/release/
+OUTPUT = target/$(BOARD)/release/
 
 # Directory to put the intermediate build files
 BUILD = $(OUTPUT)build/
 
-# Directory where the source files are
-SOURCE = src/
+# Directory where the assembly files are
+ASM = src/board/$(BOARD)/
 
 # Name of the file to output
 KERNEL = $(OUTPUT)kernel.img
@@ -23,9 +26,9 @@ KERNEL = $(OUTPUT)kernel.img
 LIST = $(OUTPUT)kernel.list
 
 # Name of the linker script to use
-LINK_SCRIPT = kernel.ld
+LINK_SCRIPT = src/kernel/kernel.ld
 
-OBJECTS := $(patsubst $(SOURCE)%.s,$(BUILD)%.o,$(wildcard $(SOURCE)*.s))
+OBJECTS := $(patsubst $(ASM)%.s,$(BUILD)%.o,$(wildcard $(ASM)*.s))
 
 # Rule to build everything (creates the target image and listing)
 all: $(KERNEL) $(LIST)
@@ -36,11 +39,11 @@ $(KERNEL): $(BUILD)kernel.elf
 
 # Rule to make the ELF file
 $(BUILD)kernel.elf: $(OBJECTS) $(LINK_SCRIPT) xargo
-	$(ARMGNU)-ld $(OBJECTS) $(OUTPUT)libbarelyos.a -o $(BUILD)kernel.elf -T $(LINK_SCRIPT)
+	$(ARMGNU)-ld --gc-sections $(OBJECTS) $(OUTPUT)libbarelyos.a -o $(BUILD)kernel.elf -T $(LINK_SCRIPT)
 
 # Rule to make the object files
-$(BUILD)%.o: $(SOURCE)%.s $(BUILD)
-	$(ARMGNU)-as $< -mcpu=$(CPU) -march=$(ARCH) -o $@
+$(BUILD)%.o: $(ASM)%.s $(BUILD)
+	$(ARMGNU)-as $< -mcpu=$(CPU) -march=$(MARCH) -o $@
 
 # Rule to make the listing file.
 $(LIST): $(BUILD)kernel.elf
@@ -48,7 +51,7 @@ $(LIST): $(BUILD)kernel.elf
 
 # Compile the Rust code with Xargo
 xargo:
-	xargo build --release --target=$(CPU)
+	xargo build --release --target=$(BOARD)
 
 # Create the build directory
 $(BUILD):
