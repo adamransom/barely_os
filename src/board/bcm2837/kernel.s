@@ -24,14 +24,6 @@ _start:
 
 .section .text
 main:
-  ldr r0, =1000000 @; 1 second
-  bl Wait @; Wait a bit
-
   bl LED_ON
-
-  ldr r0, =1000000 @; 1 second
-  bl Wait @; Wait a bit
-
-  bl LED_OFF
 
   b main
