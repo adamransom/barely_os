@@ -26,7 +26,7 @@ KERNEL = $(OUTPUT)kernel.img
 LIST = $(OUTPUT)kernel.list
 
 # Name of the linker script to use
-LINK_SCRIPT = src/kernel/kernel.ld
+LINK_SCRIPT = src/linker.ld
 
 OBJECTS := $(patsubst $(ASM)%.s,$(BUILD)%.o,$(wildcard $(ASM)*.s))
 
