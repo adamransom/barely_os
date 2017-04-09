@@ -3,7 +3,8 @@
 #![feature(lang_items)]
 #![no_std]
 
-#[macro_use] mod board;
+#[macro_use]
+mod board;
 
 pub mod kernel;
 

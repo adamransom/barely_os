@@ -18,10 +18,9 @@ pub extern "C" fn kernel_main() {
 }
 
 #[lang = "eh_personality"]
-extern fn eh_personality() {
-}
+extern "C" fn eh_personality() {}
 
 #[lang = "panic_fmt"]
-extern fn rust_begin_panic() -> ! {
+extern "C" fn rust_begin_panic() -> ! {
     hang!();
 }

@@ -24,7 +24,5 @@ const CHI: usize = 0x008; // System Timer Counter Higher 32 bits
 ///
 /// The timer uses a 32-bit unsigned integer and therefore wraps every 4295 seconds.
 pub fn read() -> u32 {
-    unsafe {
-        mmio::read(SYS_TIMER_BASE + CLO)
-    }
+    unsafe { mmio::read(SYS_TIMER_BASE + CLO) }
 }
