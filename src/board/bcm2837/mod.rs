@@ -7,6 +7,7 @@
 //! [BCM2836]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2836/QA7_rev3.4.pdf
 
 pub mod mem;
+pub mod mailbox;
 pub mod timers;
 
 /// Macro which hangs the CPU, either indefinitely or for a specific number of microseconds.
